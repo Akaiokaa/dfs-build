@@ -96,7 +96,7 @@ public class Build {
     if(start.equals(destination)) return true;
     if(visited.contains(start)) return false;
     visited.add(start);
-    
+
     for(Airport airport: start.getOutboundFlights()){
       if(canReach(airport, destination, visited)){
         return true;
@@ -115,6 +115,20 @@ public class Build {
    * @return a set of values that cannot be reached from the starting value
    */
   public static <T> Set<T> unreachable(Map<T, List<T>> graph, T starting) {
-    return new HashSet<>();
+    Set<T> set = new HashSet<>();
+    unreachable(graph, starting, set);
+    return set;
+  }
+
+  public static <T> void unreachable(Map<T, List<T>> graph, T starting, Set<T> visited) {
+    if (visited.contains(starting)) return;
+    visited.add(starting);
+    
+    List<T> neighbors = graph.get(visited);
+    if(neighbors == null) return;
+
+    for(T neighbor: neighbors){
+      unreachable(graph, neighbor, visited);
+    }
   }
 }
